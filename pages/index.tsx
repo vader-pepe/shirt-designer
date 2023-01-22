@@ -1,6 +1,10 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
+import Image from 'next/image'
 import bg from '../assets/img/bg1.png'
+import tshirt from '../assets/img/tshirt.png'
+import hoodie from '../assets/img/hoodie.png'
+import mug from '../assets/img/mug.png'
 
 const Home: NextPage = () => {
   return (
@@ -39,6 +43,15 @@ const Home: NextPage = () => {
         </p>
         <button className='bg-white text-black py-2 px-3 rounded-md z-10 mt-10'>Start Creating</button>
       </main>
+
+      <article className='flex flex-col pb-10'>
+        <h1 className='py-10 text-5xl text-center'>Start Creating</h1>
+        <div className='flex justify-between self-center relative' style={{ minWidth: '1200px' }}>
+          <Image src={tshirt} alt='tshirt guy' className='relative'/>
+          <Image src={hoodie} alt='hoodie guy' />
+          <Image src={mug} alt='mug' />
+        </div>
+      </article>
     </div>
   )
 }
