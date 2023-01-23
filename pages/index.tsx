@@ -1,12 +1,42 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
-import Image from 'next/image'
+import Image, { StaticImageData } from 'next/image'
 import bg from '../assets/img/bg1.png'
 import tshirt from '../assets/img/tshirt.png'
 import hoodie from '../assets/img/hoodie.png'
 import mug from '../assets/img/mug.png'
+import construction from '../assets/img/Under-Construction-Banner.jpg'
+import { motion } from 'framer-motion'
+import Link from 'next/link'
 
 const Home: NextPage = () => {
+  const AnimatedStartBtn = ({
+    title,
+    src,
+    alt,
+  }: {
+    title: string
+    src: StaticImageData
+    alt: string
+  }) => {
+    return (
+      <motion.button
+        className='relative'
+        initial={{
+          opacity: 0.7,
+        }}
+        whileHover={{
+          scale: 1.2,
+          opacity: 1,
+        }}
+        transition={{ type: 'spring', stiffness: 400, damping: 10 }}
+      >
+        <Image src={src} alt={alt} />
+        <small className='absolute bottom-2 right-5 text-white text-2xl'>{title}</small>
+      </motion.button>
+    )
+  }
+
   return (
     <div className='flex flex-col'>
       <Head>
@@ -16,9 +46,15 @@ const Home: NextPage = () => {
         {/* <link rel="icon" href="/favicon.ico" /> */}
       </Head>
 
+      <header className='fixed top-1/3 right-0 left-0 z-20 flex justify-center'>
+        <Image src={construction} alt='website under construction' height={150} className=""/>
+      </header>
+
       <header className='flex justify-center bg-black font-semibold h-12 w-full text-white'>
         <div style={{ minWidth: '1200px' }} className='flex justify-between items-center'>
-          <div className='text-xl'>PDA-TEECRAFT</div>
+          <Link href={'/'} className='text-xl'>
+            PDA-TEECRAFT
+          </Link>
           <div className='flex gap-1'>
             {/*Red Btn*/}
             <button className='bg-red py-2 px-3 rounded-md'>Start Creating</button>
@@ -41,15 +77,17 @@ const Home: NextPage = () => {
           interface allows you to effortlessly customize your own unique designs, featuring a wide
           range of colors, fonts, and graphics.
         </p>
-        <button className='bg-white text-black py-2 px-3 rounded-md z-10 mt-10'>Start Creating</button>
+        <button className='bg-white text-black py-2 px-3 rounded-md z-10 mt-10'>
+          Start Creating
+        </button>
       </main>
 
       <article className='flex flex-col pb-10'>
         <h1 className='py-10 text-5xl text-center'>Start Creating</h1>
-        <div className='flex justify-between self-center relative' style={{ minWidth: '1200px' }}>
-          <Image src={tshirt} alt='tshirt guy' className='relative'/>
-          <Image src={hoodie} alt='hoodie guy' />
-          <Image src={mug} alt='mug' />
+        <div className='flex justify-between self-center' style={{ minWidth: '1200px' }}>
+          <AnimatedStartBtn src={tshirt} alt='tshirt start btn' title={'Tshirt'} />
+          <AnimatedStartBtn src={hoodie} alt='hoodie start btn' title={'Hoodie'} />
+          <AnimatedStartBtn src={mug} alt='mug start btn' title={'Mug'} />
         </div>
       </article>
     </div>
