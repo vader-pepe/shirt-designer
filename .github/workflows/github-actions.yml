@@ -1,0 +1,42 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - development
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup SSH
+        uses: shimat/setup-ssh-action@v1
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: SSH into VPS
+        run: |
+          ssh -o "StrictHostKeyChecking no" -i ${{ secrets.SSH_PRIVATE_KEY }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_IP }}
+          if [ -d "shirt-designer" ]; then
+            cd shirt-designer
+          else
+            git clone git@github.com:chadwithz/shirt-designer.git
+            cd shirt-designer
+          fi
+
+      - name: Build project
+        run: |
+          yarn install
+          yarn build
+      - name: Start server
+        run: |
+          pm2 list | grep "shirt-designer"
+          if [ $? -eq 0 ]; then
+            pm2 stop "shirt-designer"
+            pm2 delete "shirt-designer"
+          fi
+          pm2 start npm --name "shirt-designer" -- start
