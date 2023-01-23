@@ -21,7 +21,7 @@ Go to the project directory
 Install dependencies
 
 ```bash
-  yarn add
+  yarn
 ```
 
 Start the server
