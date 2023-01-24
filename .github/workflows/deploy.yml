@@ -24,7 +24,7 @@ jobs:
 
       - name: SSH into VPS
         run: |
-          ssh -o "StrictHostKeyChecking no" -i ${{ secrets.SSH_KEY }} indo123@$20.198.69.185
+          ssh -o "StrictHostKeyChecking no" -i ${{ secrets.SSH_KEY }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_IP }}
           if [ -d "shirt-designer" ]; then
             cd shirt-designer
           else
