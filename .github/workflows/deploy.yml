@@ -21,4 +21,14 @@ jobs:
           known_hosts: ${{ secrets.KNOWN_HOSTS }}
           if_key_exists: fail # replace / ignore / fail; optional (defaults to fail)
 
-
+      - name: Check if project exist
+        uses: cross-the-world/ssh-scp-ssh-pipelines@latest
+        env:
+          WELCOME: "ssh scp ssh pipelines"
+          LASTSSH: "Doing something after copying"
+        with:
+          host: ${{ secrets.SSH_IP }}
+          user: ${{ secrets.SSH_USER }}
+          pass: ${{ secrets.PASSPHRASE }}
+          connect_timeout: 10s
+          first_ssh: curl https://raw.githubusercontent.com/chadwithz/shirt-designer/development/check-project.sh | bash
