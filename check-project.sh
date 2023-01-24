@@ -1,5 +1,7 @@
 #!/bin/bash
 
+exec bash \-l
+
 if [ -d "shirt-designer" ]; then
   cd shirt-designer
   echo "----Installing dependencies & building----"
