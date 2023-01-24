@@ -33,7 +33,7 @@ jobs:
               cd shirt-designer
             fi
           host: ${{ secrets.SSH_IP }}
-          username: garygrossgarten
+          username: ${{ secrets.SSH_USER }}
           passphrase: ${{ secrets.PASSPHRASE }}
           privateKey: ${{ secrets.PRIVATE_KEY}}
 
