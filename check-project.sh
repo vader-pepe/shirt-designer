@@ -2,11 +2,15 @@
 
 if [ -d "shirt-designer" ]; then
   cd shirt-designer
+  echo "----Installing dependencies & building----"
   yarn install
   yarn build
 else
+  echo "----Cloning Projects----"
   git clone git@github.com:chadwithz/shirt-designer.git
   cd shirt-designer
+  git checkout development
+  echo "----Installing dependencies & building----"
   yarn install
   yarn build
 fi
