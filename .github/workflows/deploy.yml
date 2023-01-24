@@ -19,36 +19,6 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           name: id_rsa # optional
           known_hosts: ${{ secrets.KNOWN_HOSTS }}
-          config: ${{ secrets.CONFIG }} # ssh_config; optional
           if_key_exists: fail # replace / ignore / fail; optional (defaults to fail)
 
-      - name: Check if project exist
-        uses: cross-the-world/ssh-scp-ssh-pipelines@latest
-        env:
-          WELCOME: "ssh scp ssh pipelines"
-          LASTSSH: "Doing something after copying"
-        with:
-          host: ${{ secrets.SSH_IP }}
-          user: ${{ secrets.SSH_USER }}
-          pass: ${{ secrets.PASSPHRASE }}
-          connect_timeout: 10s
-          first_ssh: |
-            bash -c "if [ -d "shirt-designer" ]; then
-              cd shirt-designer
-            else
-              git clone git@github.com:chadwithz/shirt-designer.git
-              cd shirt-designer
-            fi"
 
-      - name: Build project
-        run: |
-          yarn install
-          yarn build
-      - name: Start server
-        run: |
-          pm2 list | grep "shirt-designer"
-          if [ $? -eq 0 ]; then
-            pm2 stop "shirt-designer"
-            pm2 delete "shirt-designer"
-          fi
-          pm2 start npm --name "shirt-designer" -- start
