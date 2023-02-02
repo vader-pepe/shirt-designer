@@ -1,9 +1,7 @@
+import UnstyledLink, { UnstyledLinkProps } from 'components/links/UnstyledLink'
+import clsxm from 'lib/clsxm'
 import * as React from 'react'
 import { IconType } from 'react-icons'
-
-import clsxm from '@/lib/clsxm'
-
-import UnstyledLink, { UnstyledLinkProps } from '@/components/links/UnstyledLink'
 
 const ButtonLinkVariant = ['primary', 'outline', 'ghost', 'light', 'dark'] as const
 const ButtonLinkSize = ['sm', 'base'] as const
