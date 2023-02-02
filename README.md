@@ -1,8 +1,6 @@
-
 # Tshirt Designer
 
 A shirt designer with live chat that can connect you to the admin. Offer your price in real time!
-
 
 ## Run Locally
 
@@ -29,4 +27,3 @@ Start the server
 ```bash
   yarn dev
 ```
-

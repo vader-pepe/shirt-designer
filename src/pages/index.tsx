@@ -1,16 +1,18 @@
+import bg from 'assets/img/bg1.png'
+import hoodie from 'assets/img/hoodie.png'
+import mug from 'assets/img/mug.png'
+import tshirt from 'assets/img/tshirt.png'
+import breakpoints from 'data/breakpoints'
 import { motion } from 'framer-motion'
+import useMediaQuery from 'hooks/useMediaQuery'
 import type { NextPage } from 'next'
-import Head from 'next/head'
 import Image, { StaticImageData } from 'next/image'
 import Link from 'next/link'
-
-import bg from '../assets/img/bg1.png'
-import hoodie from '../assets/img/hoodie.png'
-import mug from '../assets/img/mug.png'
-import tshirt from '../assets/img/tshirt.png'
-import construction from '../assets/img/Under-Construction-Banner.jpg'
+import { AlertTriangle } from 'react-feather'
 
 const Home: NextPage = () => {
+  const breakpoint = useMediaQuery(breakpoints.md)
+
   const AnimatedStartBtn = ({
     title,
     src,
@@ -39,51 +41,70 @@ const Home: NextPage = () => {
   }
 
   return (
-    <div className='flex flex-col'>
-      <Head>
-        <title>Tshirt Designer</title>
-        <meta name='description' content='Design your creativity' />
-        <meta name='viewport' content='width=device-width, initial-scale=1' />
-        {/* <link rel="icon" href="/favicon.ico" /> */}
-      </Head>
-
-      <header className='fixed top-1/3 right-0 left-0 z-20 flex justify-center'>
-        <Image src={construction} alt='website under construction' height={150} className='' />
-      </header>
-
-      <header className='flex h-12 w-full justify-center bg-black font-semibold text-white'>
-        <div style={{ minWidth: '1200px' }} className='flex items-center justify-between'>
-          <Link href='/' className='text-xl'>
-            PDA-TEECRAFT
-          </Link>
-          <div className='flex gap-1'>
-            {/*Red Btn*/}
-            <button className='rounded-md bg-red py-2 px-3'>Start Creating</button>
-            {/*Black Btn*/}
-            <button className='rounded-md bg-black p-2 py-2 px-3 text-white'>Login</button>
-          </div>
-        </div>
-      </header>
-
-      <main
+    <>
+      <div
+        className='flex min-h-screen flex-col bg-cover bg-center backdrop-grayscale'
         style={{
           backgroundImage: `url(${bg.src})`,
+          boxShadow: 'inset 0 0 0 1000px rgba(0,0,0,.4)',
         }}
-        className='relative flex min-h-screen flex-col items-center justify-center bg-white bg-center bg-no-repeat text-white'
       >
-        <div className='absolute inset-0 bg-black opacity-50' />
-        <p className='z-10 text-5xl'>Design your creativity</p>
-        <p style={{ maxWidth: '975px' }} className='z-10 text-center text-lg'>
-          Unleash your creativity with our state-of-the-art tshirt design tool. Our user-friendly
-          interface allows you to effortlessly customize your own unique designs, featuring a wide
-          range of colors, fonts, and graphics.
-        </p>
-        <button className='z-10 mt-10 rounded-md bg-white py-2 px-3 text-black'>
-          Start Creating
-        </button>
-      </main>
+        <header className='z-10 bg-black py-2 px-4'>
+          <div
+            className='flex items-center justify-between'
+            style={{
+              maxWidth: !breakpoint ? '1200px' : undefined,
+              margin: !breakpoint ? 'auto' : undefined,
+            }}
+          >
+            <Link href='/'>
+              <h3 className='text-white'>PDA-TEECRAFT</h3>
+            </Link>
+            <div className='flex gap-2'>
+              <button className='rounded-md bg-red py-1 px-2 text-white hover:opacity-90'>
+                Start Creating
+              </button>
+              <button className='rounded-md bg-black py-1 px-2 text-white hover:opacity-90'>
+                Login
+              </button>
+            </div>
+          </div>
+        </header>
 
-      <article className='flex flex-col pb-10'>
+        <div className='border-box z-10 mx-8 mt-10 flex flex-col items-center justify-center rounded-md bg-black/70 p-4 backdrop-blur-sm md:hidden'>
+          <AlertTriangle className='w-10 text-orange-500' />
+          <h3 className='mt-2 text-center text-white'>
+            We can't provide you the designer feature in mobile, but you can still login to see your
+            existing designs!
+          </h3>
+        </div>
+
+        <main className='z-10'>
+          <h2 className='mt-20 text-center text-3xl text-white md:mt-36 md:text-5xl'>
+            Design your creativity
+          </h2>
+
+          <p
+            className='mt-20 px-5 text-center text-lg text-white'
+            style={{
+              maxWidth: !breakpoint ? '975px' : undefined,
+              marginLeft: !breakpoint ? 'auto' : undefined,
+              marginRight: !breakpoint ? 'auto' : undefined,
+            }}
+          >
+            Unleash your creativity with our state-of-the-art tshirt design tool. Our user-friendly
+            interface allows you to effortlessly customize your own unique designs, featuring a wide
+            range of colors, fonts, and graphics.
+          </p>
+
+          <div className=' mt-10 flex items-center justify-center md:mt-36'>
+            <button className='text-md rounded-md bg-white py-1 px-2 hover:opacity-90 '>
+              Start Creating
+            </button>
+          </div>
+        </main>
+      </div>
+      <article className='hidden flex-col pb-10 md:flex'>
         <h1 className='py-10 text-center text-5xl'>Start Creating</h1>
         <div className='flex justify-between self-center' style={{ minWidth: '1200px' }}>
           <AnimatedStartBtn src={tshirt} alt='tshirt start btn' title='Tshirt' />
@@ -91,7 +112,7 @@ const Home: NextPage = () => {
           <AnimatedStartBtn src={mug} alt='mug start btn' title='Mug' />
         </div>
       </article>
-    </div>
+    </>
   )
 }
 

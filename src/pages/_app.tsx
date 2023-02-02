@@ -15,6 +15,12 @@ function MyApp({ Component, pageProps }: AppProps) {
           }
         `}
       </style>
+      {/*TODO: Remove this while done*/}
+      {/*<div className='fixed inset-0 flex justify-center items-center z-20'>
+        <Image src={construction} alt='website under construction' height={150} className='' />
+      </div>
+      */}
+      <title>Tshirt Designer</title>
       <Component {...pageProps} />
     </>
   )
