@@ -4,6 +4,7 @@ exec bash \-l
 
 if [ -d "shirt-designer" ]; then
   cd shirt-designer
+  git pull
   echo "----Installing dependencies & building----"
   yarn install
   yarn build
