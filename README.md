@@ -1,29 +1,15 @@
-# Tshirt Designer
+# Elysia with Bun runtime
 
-A shirt designer with live chat that can connect you to the admin. Offer your price in real time!
-
-## Run Locally
-
-Clone the project
-
+## Getting Started
+To get started with this template, simply paste this command into your terminal:
 ```bash
-  git clone https://github.com/chadwithz/shirt-designer
+bun create elysia ./elysia-example
 ```
 
-Go to the project directory
-
+## Development
+To start the development server run:
 ```bash
-  cd shirt-designer
+bun run dev
 ```
 
-Install dependencies
-
-```bash
-  yarn
-```
-
-Start the server
-
-```bash
-  yarn dev
-```
+Open http://localhost:3000/ with your browser to see the result.
