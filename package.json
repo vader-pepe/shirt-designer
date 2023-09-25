@@ -3,13 +3,20 @@
   "version": "1.0.50",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "bun run --watch src/index.ts"
+    "watch:server-dev": "bun run --watch src/index.tsx",
+    "watch:css": "bun x tailwindcss -i ./public/styles.css -o ./public/output.css --watch",
+    "dev": "concurrently \"bun run watch:server-dev\" \"bun run watch:css\""
   },
   "dependencies": {
-    "elysia": "latest"
+    "@elysiajs/html": "^0.7.0",
+    "@elysiajs/static": "^0.7.1",
+    "elysia": "^0.7.12"
   },
   "devDependencies": {
-    "bun-types": "latest"
+    "bun-types": "latest",
+    "concurrently": "^8.2.1",
+    "tailwindcss": "^3.3.3",
+    "typed-html": "^3.0.1"
   },
   "module": "src/index.js"
 }
