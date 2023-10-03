@@ -40,14 +40,20 @@ const AnimBtn = ({ children, className }: { children: string | JSX.Element; clas
   </button>
 }
 
-const Header = ({ pos = 'main' }: { pos?: 'main' | 'login' }) => {
-  return <header class={`z-10 ${pos === 'main' ? 'bg-black' : ''} py-2 px-4`}>
-    <div class='flex items-center justify-between max-w-[1200px] m-[auto]'>
-      <a href='/'>
+const Header = ({ pos = 'main' }: { pos?: 'main' | 'login' | 'designer' }) => {
+  return <header class={`h-full min-h-[56px] box-border z-10 ${pos === 'main' ? 'bg-black' : pos === 'designer' ? 'bg-white shadow-lg' : ''} py-2 px-4`}>
+    <div class={`flex items-center justify-between max-w-[1500px] m-[auto] `}>
+      <a href='/' class="h-full ">
         <h3 class={`${pos === 'main' ? 'text-white' : 'text-black'}`}>PDA-TEECRAFT</h3>
       </a>
-      <div class='flex gap-2'>
-        <AnimBtn className={`rounded-md ${pos === 'main' ? 'bg-red-700' : 'bg-black'} py-2 px-3 text-white hover:opacity-90`}>
+      <div class='flex gap-2 min-h-[40px]'>
+        <AnimBtn className={`${pos !== 'designer' ? 'hidden' : ''} min-h-[40px]`}>
+          <div class="flex items-center gap-2 ">
+            <i class="fa-regular fa-floppy-disk text-xl"></i>
+            Save your design
+          </div>
+        </AnimBtn>
+        <AnimBtn className={`${pos === 'designer' ? 'hidden' : ''} rounded-md ${pos === 'main' ? 'bg-red-700' : 'bg-black'} py-2 px-3 text-white hover:opacity-90`}>
           <a href="/register">{pos === 'main' ? 'Start Creating' : 'Create Account'}</a>
         </AnimBtn>
         <AnimBtn className={`hidden sm:block rounded-md bg-black py-1 px-2 text-white hover:opacity-90 ${pos === 'main' ? '' : 'sm:hidden'}`}>
@@ -100,7 +106,7 @@ const app = new Elysia()
         </div>
         <article class='relative hidden flex-col pb-10 md:flex'>
           <h1 class='py-10 text-center text-5xl'>Start Creating</h1>
-          <div class='flex gap-5 justify-between self-center max-w-[1200px]'>
+          <div class='flex gap-5 justify-between self-center max-w-[1500px]'>
             <AnimSelectBtn src="./public/assets/tshirt.png" title="Tshirt" alt="tshirt button" />
             <AnimSelectBtn src="./public/assets/hoodie.png" title="Hoodie" alt="hoodie button" />
             <AnimSelectBtn src="./public/assets/mug.png" title="Mug" alt="mug button" />
@@ -216,6 +222,118 @@ const app = new Elysia()
             </main>
           </div>
         </div>
+      </body>
+    </BaseDoc>
+  ))
+  .get("/designer", ({ html }) => html(
+    <BaseDoc>
+      <body>
+        <Header pos="designer"></Header>
+        <main class="flex max-w-[1500px] m-[auto] pt-2">
+          <div class="w-1/3 border-r-2">
+            <div class="py-10 flex flex-col border-b-2">
+              <div class="font-semibold">Design your product</div>
+              <small class="text-gray-500 font-semibold mt-5">Max file 50mb</small>
+              <AnimBtn className="border mt-3 py-3 rounded-lg mr-20">
+                <div class="flex gap-2 justify-center items-center ">
+                  <i class="fa-solid fa-plus"></i>
+                  Add image
+                </div>
+              </AnimBtn>
+            </div>
+
+            <div class="py-10 flex flex-col border-b-2">
+              <div class="font-semibold">Choose product colors</div>
+              <small class="text-gray-500 font-semibold mt-5">Select multiple background color to offer</small>
+              <div class="flex gap-2 mr-20 flex-wrap">
+                <AnimBtn className="mt-3 py-3 rounded-lg ">
+                  <div class="rounded-full w-[31px] h-[31px] bg-black"></div>
+                </AnimBtn>
+                <AnimBtn className="mt-3 py-3 rounded-lg ">
+                  <div class="rounded-full w-[31px] h-[31px] bg-red-500"></div>
+                </AnimBtn>
+                <AnimBtn className="mt-3 py-3 rounded-lg ">
+                  <div class="rounded-full w-[31px] h-[31px] bg-[#FCF58B]"></div>
+                </AnimBtn>
+                <AnimBtn className="mt-3 py-3 rounded-lg ">
+                  <div class="rounded-full w-[31px] h-[31px] bg-[#0C1A2C]"></div>
+                </AnimBtn>
+                <AnimBtn className="mt-3 py-3 rounded-lg ">
+                  <div class="rounded-full w-[31px] h-[31px] bg-[#22488F]"></div>
+                </AnimBtn>
+                <AnimBtn className="mt-3 py-3 rounded-lg ">
+                  <div class="rounded-full w-[31px] h-[31px] bg-[#523885]"></div>
+                </AnimBtn>
+                <AnimBtn className="mt-3 py-3 rounded-lg ">
+                  <div class="rounded-full w-[31px] h-[31px] bg-white border"></div>
+                </AnimBtn>
+                <AnimBtn className="mt-3 py-3 rounded-lg ">
+                  <div class="rounded-full w-[31px] h-[31px] bg-[#413C42]"></div>
+                </AnimBtn>
+              </div>
+            </div>
+
+            <div class="py-10 flex flex-col border-b-2">
+              <div class="font-semibold">View</div>
+              <div class="flex gap-3 mr-20">
+                <AnimBtn className="bg-black flex-1 border mt-3 py-3 rounded-lg ">
+                  <div class="text-white flex gap-2 justify-center items-center ">
+                    Front
+                  </div>
+                </AnimBtn>
+                <AnimBtn className="flex-1 border mt-3 py-3 rounded-lg ">
+                  <div class="flex gap-2 justify-center items-center ">
+                    Back
+                  </div>
+                </AnimBtn>
+              </div>
+            </div>
+
+            <div class="py-10 flex flex-col border-b-2">
+              <div class="font-semibold">Add your font</div>
+              <AnimBtn className="border mt-3 py-3 rounded-lg mr-20">
+                <div class="flex gap-2 justify-center items-center ">
+                  <i class="fa-solid fa-font"></i>
+                  Add Text
+                </div>
+              </AnimBtn>
+              <div class="mt-3 flex justify-center gap-2 mr-20">
+                <AnimBtn className="flex gap-2 justify-center items-center border py-2 px-3 rounded-md">
+                  <i class="fa-solid fa-font"></i>
+                </AnimBtn>
+                <AnimBtn className="flex gap-2 justify-center items-center border py-2 px-3 rounded-md">
+                  <i class="fa-solid fa-bold"></i>
+                </AnimBtn>
+                <AnimBtn className="flex gap-2 justify-center items-center border py-2 px-3 rounded-md">
+                  <i class="fa-solid fa-italic"></i>
+                </AnimBtn>
+                <AnimBtn className="flex gap-2 justify-center items-center border py-2 px-3 rounded-md">
+                  <i class="fa-solid fa-strikethrough"></i>
+                </AnimBtn>
+                <AnimBtn className="flex gap-2 justify-center items-center border py-2 px-3 rounded-md">
+                  <i class="fa-solid fa-underline"></i>
+                </AnimBtn>
+              </div>
+            </div>
+
+            <div class="py-10 flex flex-col border-b-2">
+              <AnimBtn className="flex gap-2 justify-center items-center border py-2 px-3 rounded-md mr-20">
+                <div>
+                  <i class="fa-solid fa-arrow-down"></i>
+                  Download
+                </div>
+              </AnimBtn>
+            </div>
+
+          </div>
+          <div class="flex flex-col justify-center items-center flex-1 bg-[#f6f6f9]">
+            <div class="flex-1 flex items-center justify-center relative">
+              <img src="./public/assets/transparent-shirt-front.png" class="bg-cover w-[900px] z-10" alt="design area" />
+              <div class="bg-red-700 absolute inset-0"></div>
+            </div>
+            <div class="flex justify-center items-center min-h-[36px] w-full bg-gray-800 font-light text-white">Design 1</div>
+          </div>
+        </main>
       </body>
     </BaseDoc>
   ))
