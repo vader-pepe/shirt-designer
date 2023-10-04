@@ -14,8 +14,9 @@ const BaseDoc = ({ children }: elements.Children) => `<!DOCTYPE html>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   </head>
   ${children}
-<script src="./public/htmx.min.js"></script>
-<script src="./public/hyperscript.min.js"></script>
+<script src="./public/scripts/htmx.min.js"></script>
+<script src="./public/scripts/hyperscript.min.js"></script>
+<script src="./public/scripts/konva.min.js"></script>
 </html>`
 
 const AnimSelectBtn = ({ src, alt, title }: { src: string; alt: string; title: string; }) => {
@@ -327,9 +328,39 @@ const app = new Elysia()
 
           </div>
           <div class="flex flex-col justify-center items-center flex-1 bg-[#f6f6f9]">
-            <div class="flex-1 flex items-center justify-center relative">
-              <img src="./public/assets/transparent-shirt-front.png" class="bg-cover w-[900px] z-10" alt="design area" />
-              <div class="bg-red-700 absolute inset-0"></div>
+            <div _={`init js 
+// first we need to create a stage
+var stage = new Konva.Stage({
+  container: 'c',   // id of container <div>
+  width: 270,
+  height: 350
+});
+
+// then create layer
+var layer = new Konva.Layer();
+
+// create our shape
+var circle = new Konva.Circle({
+  x: stage.width() / 2,
+  y: stage.height() / 2,
+  radius: 70,
+  fill: 'red',
+  stroke: 'black',
+  strokeWidth: 4,
+  draggable: true
+});
+
+// add the shape to the layer
+layer.add(circle);
+
+// add the layer to the stage
+stage.add(layer);
+
+// draw the image
+layer.draw();
+end`} class="flex-1 flex items-center justify-center relative">
+              <img src="./public/assets/transparent-shirt-front.png" class="bg-cover w-[750px] bg-red-700" alt="design area" />
+              <div id="c" class="absolute w-[270px] h-[350px] border-dashed border-2 border-red-500"></div>
             </div>
             <div class="flex justify-center items-center min-h-[36px] w-full bg-gray-800 font-light text-white">Design 1</div>
           </div>
