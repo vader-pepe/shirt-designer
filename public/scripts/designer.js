@@ -1,17 +1,16 @@
+/// <reference lib="dom" />
+/// <reference lib="dom.iterable" />
 /**
- * @type {import('konva').Stage} 
+ * @type {import('konva')} Konva 
  */
 // @ts-ignore
+const Konva = window.Konva
 var stage = new Konva.Stage({
-  container: 'c',   // id of container <div>
+  container: 'c',
   width: 750,
   height: 750,
 });
 
-/**
- * @type {import('konva').Layer} 
- */
-// @ts-ignore
 var layer = new Konva.Layer();
 
 stage.add(layer);
@@ -19,10 +18,6 @@ stage.add(layer);
 // main API:
 var imageObj = new Image();
 imageObj.onload = function() {
-  /**
-   * @type {import('konva').Image} 
-   */
-  // @ts-ignore
   var myImg = new Konva.Image({
     x: 0,
     y: 0,
