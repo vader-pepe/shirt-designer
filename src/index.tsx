@@ -47,7 +47,21 @@ const AnimSelectBtn = ({ src, alt, title }: { src: string; alt: string; title: s
   </button>
 }
 
-const AnimBtn = ({ children, className }: { children: string | JSX.Element; className?: string; }) => {
+const AnimBtn = ({ children, className, type = 'button' }: { children: string | JSX.Element; className?: string; type?: 'button' | 'file' }) => {
+  if (type === 'file') {
+    return <label
+      class={className ? className : ''}
+      style="transition: all 100ms cubic-bezier(.68,-0.55,.27,1.55);"
+      _="on mouseenter add .scale-105 then settle then on mouseleave remove .scale-105"
+    >
+      <input
+        type="file"
+        class="hidden"
+        id="upfile"
+      />
+      {children}
+    </label>
+  }
   return <button
     style="transition: all 100ms cubic-bezier(.68,-0.55,.27,1.55);"
     class={className ? className : ''}
@@ -251,7 +265,7 @@ const app = new Elysia()
             <div class="py-10 flex flex-col border-b-2">
               <div class="font-semibold">Design your product</div>
               <small class="text-gray-500 font-semibold mt-5">Max file 50mb</small>
-              <AnimBtn className="border mt-3 py-3 rounded-lg mr-20">
+              <AnimBtn type="file" className="border mt-3 py-3 rounded-lg mr-20">
                 <div class="flex gap-2 justify-center items-center ">
                   <i class="fa-solid fa-plus"></i>
                   Add image
