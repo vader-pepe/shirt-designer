@@ -76,6 +76,7 @@ mainCanvas.onload = function() {
           // this is valid properties
           console.log(this.naturalWidth)
           console.log(this.naturalHeight)
+
         }
         var designImg = new Konva.Image({
           image: rawDesignImg,
