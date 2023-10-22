@@ -28,8 +28,7 @@ mainCanvas.onload = function() {
     height: 750,
   });
 
-  /** @type {HTMLButtonElement[]} */
-  const colorBtns = Array.from(document.querySelectorAll(`div.flex.gap-2.mr-20.flex-wrap > button[style="transition: all 100ms cubic-bezier(.68,-0.55,.27,1.55);"]`))
+  const colorBtns = /** @type {HTMLButtonElement[]} */(Array.from(document.querySelectorAll(`div.flex.gap-2.mr-20.flex-wrap > button[style="transition: all 100ms cubic-bezier(.68,-0.55,.27,1.55);"]`)))
   for (let i = 0; i < colorBtns.length; i++) {
     colorBtns[i].addEventListener('click', (e) => {
       if (e.target instanceof HTMLDivElement) {
@@ -70,13 +69,20 @@ mainCanvas.onload = function() {
       const file = e.target.files?.[0]
       if (file) {
 
-        const rawDesignImg = new Image(100, 200);
+        const rawDesignImg = new Image();
         rawDesignImg.src = URL.createObjectURL(file)
+
+        rawDesignImg.onload = function() {
+          // this is valid properties
+          console.log(this.naturalWidth)
+          console.log(this.naturalHeight)
+        }
         var designImg = new Konva.Image({
           image: rawDesignImg,
           draggable: true,
           globalCompositeOperation: 'lighten',
         });
+
         let imagePos = getMiddlePos(designAreaPos, designAreaDimension, { width: designImg.width(), height: designImg.height() });
         designImg.setAttrs({
           x: imagePos.x,
@@ -128,14 +134,30 @@ mainCanvas.onload = function() {
             designImg.destroy()
           }
         })
-        const readyFile = /** @type {HTMLButtonElement} */(document.querySelector(`.py-10.flex.flex-col.border-b-2 > .flex.gap-2.justify-center.items-center.border.py-2.px-3.rounded-md.mr-20`))
-        readyFile.addEventListener('click', () => {
+        const downloadImg = /** @type {HTMLButtonElement} */(document.querySelector(`.py-10.flex.flex-col.border-b-2 > .flex.gap-2.justify-center.items-center.border.py-2.px-3.rounded-md.mr-20`))
+        downloadImg.addEventListener('click', () => {
           tr.destroy()
           designImg.draggable(false)
           designArea.destroy()
         })
       }
     }
+  })
+
+  const buttons = /** @type {HTMLButtonElement[]} */(Array.from(document.querySelectorAll(`button[style="transition: all 100ms cubic-bezier(.68,-0.55,.27,1.55);"] > .flex.gap-2.justify-center.items-center`)))
+  const addTextBtn = buttons[2]
+  addTextBtn.addEventListener('click', (e) => {
+    var simpleText = new Konva.Text({
+      x: stage.width() / 2,
+      y: designAreaPos.y,
+      text: 'Simple Text',
+      fontSize: 30,
+      fontFamily: 'Calibri',
+      fill: 'green',
+    });
+
+    simpleText.offsetX(simpleText.width() / 2);
+    layer.add(simpleText)
   })
 
   layer.add(mainCanvasImg);
