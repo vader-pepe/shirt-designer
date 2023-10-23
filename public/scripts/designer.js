@@ -74,73 +74,76 @@ mainCanvas.onload = function() {
 
         rawDesignImg.onload = function() {
           // this is valid properties
-          console.log(this.naturalWidth)
-          console.log(this.naturalHeight)
+          console.log(rawDesignImg.naturalWidth)
+          console.log(rawDesignImg.naturalHeight)
 
-        }
-        var designImg = new Konva.Image({
-          image: rawDesignImg,
-          draggable: true,
-          globalCompositeOperation: 'lighten',
-        });
+          var designImg = new Konva.Image({
+            image: rawDesignImg,
+            draggable: true,
+            globalCompositeOperation: 'lighten',
+            height: rawDesignImg.naturalHeight * .3,
+            width: rawDesignImg.naturalWidth * .3
+          });
 
-        let imagePos = getMiddlePos(designAreaPos, designAreaDimension, { width: designImg.width(), height: designImg.height() });
-        designImg.setAttrs({
-          x: imagePos.x,
-          y: imagePos.y,
-          width: designImg.width(),
-          height: designImg.height(),
-        })
+          let imagePos = getMiddlePos(designAreaPos, designAreaDimension, { width: designImg.width(), height: designImg.height() });
+          designImg.setAttrs({
+            x: imagePos.x,
+            y: imagePos.y,
+            width: designImg.width(),
+            height: designImg.height(),
+          })
 
-        designImg.on('dragmove', (e) => {
-          if (e.target.x() <= designAreaPos.x) {
-            designImg.x(designAreaPos.x)
-          }
-
-          if (e.target.x() >= (designAreaPos.x + designAreaDimension.width - (e.target.width() * e.target.scaleX()))) {
-            designImg.x(designAreaPos.x + designAreaDimension.width - (e.target.width() * e.target.scaleX()))
-          }
-
-          if (e.target.y() <= designAreaPos.y) {
-            designImg.y(designAreaPos.y)
-          }
-
-          if (e.target.y() >= (designAreaPos.y + designAreaDimension.height - (e.target.height() * e.target.scaleY()))) {
-            designImg.y(designAreaPos.y + designAreaDimension.height - (e.target.height() * e.target.scaleY()))
-          }
-        })
-
-        var tr = new Konva.Transformer({
-          boundBoxFunc: function(oldBoundBox, newBoundBox) {
-            // "boundBox" is an object with
-            // x, y, width, height and rotation properties
-            // transformer tool will try to fit nodes into that box
-
-            // the logic is simple, if new width is too big
-            // we will return previous state
-            if (Math.abs(newBoundBox.width) > designAreaDimension.width || Math.abs(newBoundBox.height) > designAreaDimension.height) {
-              return oldBoundBox;
+          designImg.on('dragmove', (e) => {
+            if (e.target.x() <= designAreaPos.x) {
+              designImg.x(designAreaPos.x)
             }
 
-            return newBoundBox;
-          },
-        });
+            if (e.target.x() >= (designAreaPos.x + designAreaDimension.width - (e.target.width() * e.target.scaleX()))) {
+              designImg.x(designAreaPos.x + designAreaDimension.width - (e.target.width() * e.target.scaleX()))
+            }
 
-        layer.add(designImg)
-        layer.add(tr)
-        tr.nodes([designImg])
-        document.addEventListener('keydown', (e) => {
-          if (e.isComposing || e.keyCode === 46) {
-            tr.destroy()
-            designImg.destroy()
-          }
-        })
-        const downloadImg = /** @type {HTMLButtonElement} */(document.querySelector(`.py-10.flex.flex-col.border-b-2 > .flex.gap-2.justify-center.items-center.border.py-2.px-3.rounded-md.mr-20`))
-        downloadImg.addEventListener('click', () => {
-          tr.destroy()
-          designImg.draggable(false)
-          designArea.destroy()
-        })
+            if (e.target.y() <= designAreaPos.y) {
+              designImg.y(designAreaPos.y)
+            }
+
+            if (e.target.y() >= (designAreaPos.y + designAreaDimension.height - (e.target.height() * e.target.scaleY()))) {
+              designImg.y(designAreaPos.y + designAreaDimension.height - (e.target.height() * e.target.scaleY()))
+            }
+          })
+
+          var tr = new Konva.Transformer({
+            boundBoxFunc: function(oldBoundBox, newBoundBox) {
+              // "boundBox" is an object with
+              // x, y, width, height and rotation properties
+              // transformer tool will try to fit nodes into that box
+
+              // the logic is simple, if new width is too big
+              // we will return previous state
+              if (Math.abs(newBoundBox.width) > designAreaDimension.width || Math.abs(newBoundBox.height) > designAreaDimension.height) {
+                return oldBoundBox;
+              }
+
+              return newBoundBox;
+            },
+          });
+
+          layer.add(designImg)
+          layer.add(tr)
+          tr.nodes([designImg])
+          document.addEventListener('keydown', (e) => {
+            if (e.isComposing || e.keyCode === 46) {
+              tr.destroy()
+              designImg.destroy()
+            }
+          })
+          const downloadImg = /** @type {HTMLButtonElement} */(document.querySelector(`.py-10.flex.flex-col.border-b-2 > .flex.gap-2.justify-center.items-center.border.py-2.px-3.rounded-md.mr-20`))
+          downloadImg.addEventListener('click', () => {
+            console.log(stage.toJSON())
+            // tr.destroy()
+            // designImg.draggable(false)
+            // designArea.destroy()
+          })
+        }
       }
     }
   })
