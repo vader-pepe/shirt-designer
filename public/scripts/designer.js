@@ -1,10 +1,62 @@
 /// <reference lib="dom" />
 /// <reference lib="dom.iterable" />
+
 /**
  * @type {import('konva')} Konva 
  */
 // @ts-ignore
 const Konva = window.Konva
+
+/**
+ * convert file to base64
+ * @function
+ * @name toBase64
+ * @param {File} file
+ * @returns {Promise<string>}
+ */
+const toBase64 = file => new Promise((resolve, reject) => {
+  const reader = new FileReader();
+  reader.readAsDataURL(file);
+  reader.onload = () => resolve(/** @type {string} */(reader.result));
+  reader.onerror = reject;
+});
+
+/**
+* @typedef {Object} State
+* @property {MainCanvas} mainCanvas 
+* @property {Array<Vec2d & Dimension & {src:string; transformer: import('konva').Transformer}>} images
+* @property {string[]} text
+*/
+
+/**
+* @typedef {Object} MainCanvas
+* @property {string} side
+* @property {string} type
+* @property {string} color
+* @property {string} canvas
+*/
+
+const designAreaPos = {
+  x: 246,
+  y: 265,
+}
+const designAreaDimension = {
+  width: 258,
+  height: 327,
+}
+
+// initial state
+var state =
+/** @type {State} */({
+    mainCanvas: {
+      side: 'front',
+      type: 'tshirt',
+      color: 'rgb(0, 0, 0 )',
+      canvas: '/public/assets/transparent-shirt-front.png',
+    },
+    images: [],
+    text: []
+  })
 
 var stage = new Konva.Stage({
   container: 'c',
@@ -22,7 +74,7 @@ mainCanvas.onload = function() {
   var mainCanvasImg = new Konva.Image({
     x: 0,
     y: 0,
-    fill: 'rgb(0, 0, 0 )',
+    fill: state.mainCanvas.color,
     image: mainCanvas,
     width: 750,
     height: 750,
@@ -33,6 +85,7 @@ mainCanvas.onload = function() {
     colorBtns[i].addEventListener('click', (e) => {
       if (e.target instanceof HTMLDivElement) {
         mainCanvasImg.fill(window.getComputedStyle(e.target, null).getPropertyValue('background-color'))
+        state.mainCanvas.color = window.getComputedStyle(e.target, null).getPropertyValue('background-color')
       }
     })
   }
@@ -45,14 +98,6 @@ mainCanvas.onload = function() {
   // 750 x 750
   // 327 x 258
 
-  const designAreaPos = {
-    x: 246,
-    y: 265,
-  }
-  const designAreaDimension = {
-    width: 258,
-    height: 327,
-  }
   var designArea = new Konva.Rect({
     width: designAreaDimension.width,
     height: designAreaDimension.height,
@@ -64,104 +109,69 @@ mainCanvas.onload = function() {
   designArea.listening(false);
 
   const inputEle = /** @type {HTMLInputElement} */(document.querySelector('#upfile'))
-  inputEle.addEventListener('change', e => {
+  inputEle.addEventListener('change', async e => {
     if (e.target instanceof HTMLInputElement) {
       const file = e.target.files?.[0]
       if (file) {
-
         const rawDesignImg = new Image();
-        rawDesignImg.src = URL.createObjectURL(file)
+        const tempImg = await toBase64(file)
+        rawDesignImg.src = tempImg
+        var designImg = new Konva.Image({
+          image: rawDesignImg,
+          draggable: true,
+        });
+
+        var tr = new Konva.Transformer({
+          boundBoxFunc: function(oldBoundBox, newBoundBox) {
+            // "boundBox" is an object with
+            // x, y, width, height and rotation properties
+            // transformer tool will try to fit nodes into that box
+
+            // the logic is simple, if new width is too big
+            // we will return previous state
+            if (Math.abs(newBoundBox.width) > designAreaDimension.width || Math.abs(newBoundBox.height) > designAreaDimension.height) {
+              return oldBoundBox;
+            }
+
+            return newBoundBox;
+          },
+        });
 
         rawDesignImg.onload = function() {
-          // this is valid properties
-          console.log(rawDesignImg.naturalWidth)
-          console.log(rawDesignImg.naturalHeight)
-
-          var designImg = new Konva.Image({
-            image: rawDesignImg,
-            draggable: true,
-            globalCompositeOperation: 'lighten',
-            height: rawDesignImg.naturalHeight * .3,
-            width: rawDesignImg.naturalWidth * .3
-          });
-
-          let imagePos = getMiddlePos(designAreaPos, designAreaDimension, { width: designImg.width(), height: designImg.height() });
-          designImg.setAttrs({
+          const imagePos = getMiddlePos(designAreaPos, designAreaDimension, { width: rawDesignImg.naturalHeight * .3, height: rawDesignImg.naturalWidth * .3 });
+          const tempState = {
             x: imagePos.x,
             y: imagePos.y,
-            width: designImg.width(),
-            height: designImg.height(),
+            height: rawDesignImg.naturalHeight * .3,
+            width: rawDesignImg.naturalWidth * .3,
+          }
+          state.images.push({
+            ...tempState,
+            transformer: tr,
+            src: tempImg,
           })
-
-          designImg.on('dragmove', (e) => {
-            if (e.target.x() <= designAreaPos.x) {
-              designImg.x(designAreaPos.x)
-            }
-
-            if (e.target.x() >= (designAreaPos.x + designAreaDimension.width - (e.target.width() * e.target.scaleX()))) {
-              designImg.x(designAreaPos.x + designAreaDimension.width - (e.target.width() * e.target.scaleX()))
-            }
-
-            if (e.target.y() <= designAreaPos.y) {
-              designImg.y(designAreaPos.y)
-            }
-
-            if (e.target.y() >= (designAreaPos.y + designAreaDimension.height - (e.target.height() * e.target.scaleY()))) {
-              designImg.y(designAreaPos.y + designAreaDimension.height - (e.target.height() * e.target.scaleY()))
-            }
-          })
-
-          var tr = new Konva.Transformer({
-            boundBoxFunc: function(oldBoundBox, newBoundBox) {
-              // "boundBox" is an object with
-              // x, y, width, height and rotation properties
-              // transformer tool will try to fit nodes into that box
-
-              // the logic is simple, if new width is too big
-              // we will return previous state
-              if (Math.abs(newBoundBox.width) > designAreaDimension.width || Math.abs(newBoundBox.height) > designAreaDimension.height) {
-                return oldBoundBox;
-              }
-
-              return newBoundBox;
-            },
-          });
-
-          layer.add(designImg)
-          layer.add(tr)
-          tr.nodes([designImg])
-          document.addEventListener('keydown', (e) => {
-            if (e.isComposing || e.keyCode === 46) {
-              tr.destroy()
-              designImg.destroy()
-            }
-          })
-          const downloadImg = /** @type {HTMLButtonElement} */(document.querySelector(`.py-10.flex.flex-col.border-b-2 > .flex.gap-2.justify-center.items-center.border.py-2.px-3.rounded-md.mr-20`))
-          downloadImg.addEventListener('click', () => {
-            console.log(stage.toJSON())
-            // tr.destroy()
-            // designImg.draggable(false)
-            // designArea.destroy()
+          designImg.setAttrs({
+            ...tempState
           })
         }
+
+        designImg.on('dragmove', (e) => {
+
+        })
+
+        layer.add(designImg)
+        layer.add(tr)
+        tr.nodes([designImg])
+
+        const downloadImg = /** @type {HTMLButtonElement} */(document.querySelector(`.py-10.flex.flex-col.border-b-2 > .flex.gap-2.justify-center.items-center.border.py-2.px-3.rounded-md.mr-20`))
+        downloadImg.addEventListener('click', () => {
+          console.log(JSON.stringify(state))
+          // tr.destroy()
+          // designImg.draggable(false)
+          // designArea.destroy()
+        })
       }
     }
-  })
-
-  const buttons = /** @type {HTMLButtonElement[]} */(Array.from(document.querySelectorAll(`button[style="transition: all 100ms cubic-bezier(.68,-0.55,.27,1.55);"] > .flex.gap-2.justify-center.items-center`)))
-  const addTextBtn = buttons[2]
-  addTextBtn.addEventListener('click', (e) => {
-    var simpleText = new Konva.Text({
-      x: stage.width() / 2,
-      y: designAreaPos.y,
-      text: 'Simple Text',
-      fontSize: 30,
-      fontFamily: 'Calibri',
-      fill: 'green',
-    });
-
-    simpleText.offsetX(simpleText.width() / 2);
-    layer.add(simpleText)
   })
 
   layer.add(mainCanvasImg);
@@ -169,12 +179,79 @@ mainCanvas.onload = function() {
   layer.add(designArea);
 };
 
-mainCanvas.src = '/public/assets/transparent-shirt-front.png';
+mainCanvas.src = state.mainCanvas.canvas;
 
 layer.draw();
 
 /**
-* @typedef {Object} Coords
+ * update function for the state
+ * @function
+ * @name update
+ */
+function update() {
+  // find image index
+  // update only that image (x,y,width, height, rotation, image(base64))
+}
+
+/**
+ * create function for the state
+ * @function
+ * @name create
+ */
+async function create() {
+  const rawdata = await fetch('./public/scripts/data.json')
+  const data = /** @type {State} */(await rawdata.json())
+  data.images.forEach(image => {
+    const rawDesignImg = new Image();
+    rawDesignImg.src = image.src
+    var designImg = new Konva.Image({
+      image: rawDesignImg,
+      draggable: true,
+    });
+
+    var tr = new Konva.Transformer({
+      boundBoxFunc: function(oldBoundBox, newBoundBox) {
+        // "boundBox" is an object with
+        // x, y, width, height and rotation properties
+        // transformer tool will try to fit nodes into that box
+
+        // the logic is simple, if new width is too big
+        // we will return previous state
+        if (Math.abs(newBoundBox.width) > designAreaDimension.width || Math.abs(newBoundBox.height) > designAreaDimension.height) {
+          return oldBoundBox;
+        }
+
+        return newBoundBox;
+      },
+    });
+
+    rawDesignImg.onload = function() {
+      const imagePos = getMiddlePos(designAreaPos, designAreaDimension, { width: rawDesignImg.naturalHeight * .3, height: rawDesignImg.naturalWidth * .3 });
+      const tempState = {
+        x: imagePos.x,
+        y: imagePos.y,
+        height: rawDesignImg.naturalHeight * .3,
+        width: rawDesignImg.naturalWidth * .3,
+      }
+      state.images.push({
+        ...tempState,
+        transformer: tr,
+        src: image.src,
+      })
+      designImg.setAttrs({
+        ...tempState
+      })
+    }
+    layer.add(designImg)
+    layer.add(tr)
+    tr.nodes([designImg])
+  })
+}
+
+create()
+
+/**
+* @typedef {Object} Vec2d
 * @property {number} x 
 * @property {number} y
 */
@@ -194,10 +271,10 @@ layer.draw();
  * simple function to get the x & y for the image to be centered in the frame
  * @name getMiddlePos
  * @function
- * @param {Coords} framePos frame position
+ * @param {Vec2d} framePos frame position
  * @param {Dimension} frameSize size of the frame
  * @param {Dimension} imageSize size of the image
- * @return {Coords} return x and y
+ * @return {Vec2d} return x and y
 */
 function getMiddlePos(framePos, frameSize, imageSize) {
   return {

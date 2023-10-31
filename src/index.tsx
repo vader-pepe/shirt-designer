@@ -47,12 +47,12 @@ const AnimSelectBtn = ({ src, alt, title }: { src: string; alt: string; title: s
   </button>
 }
 
-const AnimBtn = ({ children, className, type = 'button' }: { children: string | JSX.Element; className?: string; type?: 'button' | 'file' }) => {
+const AnimBtn = ({ children, className, type = 'button', _ }: { children: string | JSX.Element; className?: string; type?: 'button' | 'file'; _?: string; }) => {
   if (type === 'file') {
     return <label
       class={className ? className : ''}
       style="transition: all 100ms cubic-bezier(.68,-0.55,.27,1.55);"
-      _="on mouseenter add .scale-105 then settle then on mouseleave remove .scale-105"
+      _={`${_ ? _ : ''} on mouseenter add .scale-105 then settle then on mouseleave remove .scale-105`}
     >
       <input
         type="file"
@@ -65,7 +65,7 @@ const AnimBtn = ({ children, className, type = 'button' }: { children: string | 
   return <button
     style="transition: all 100ms cubic-bezier(.68,-0.55,.27,1.55);"
     class={className ? className : ''}
-    _="on mouseenter add .scale-105 then settle then on mouseleave remove .scale-105"
+    _={`${_ ? _ : ''} on mouseenter add .scale-105 then settle then on mouseleave remove .scale-105`}
   >
     {children}
   </button>
